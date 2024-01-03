@@ -11,3 +11,23 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.input {
+  display: block;
+  padding: 5px;
+  width: 200px;
+  margin: 10px;
+}
+.buttonWrapper {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.buttonWrapper button {
+  width: 20%;
+}
+.selectUser {
+  margin: 5px;
+  font-size: 15px;
+  padding: 10px;
+}
