@@ -1,14 +1,14 @@
 
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { useEffect, useState } from "react";
 import { FormModel } from "../App";
+import { useDispatch, useSelector } from "react-redux";
+import { updateUser } from "../store/UserStore";
 
-export const EditUser = ({ initialValuesProp, onUpdateUser }: { initialValuesProp: FormModel, onUpdateUser: (arg0: FormModel) => any }) => {
-    const [initialValues, setInitial] = useState({ name: "", username: "", email: "" })
 
-    useEffect(() => {
-        setInitial(initialValuesProp)
-    }, [initialValuesProp])
+export const EditUser = () => {
+
+    const dispatch = useDispatch();
+    const initialFormValues: FormModel = useSelector((state: any) => state.UserState.initialFormValues);
 
     const validateForm = (values: FormModel) => {
         const errors: any = {};
@@ -32,12 +32,13 @@ export const EditUser = ({ initialValuesProp, onUpdateUser }: { initialValuesPro
     return (
         <div>
             <h1>Edit user</h1>
-            <Formik enableReinitialize
+            <Formik
+                enableReinitialize
                 onSubmit={(formData, { setSubmitting }) => {
-                    onUpdateUser(formData)
                     setSubmitting(false);
+                    dispatch(updateUser(formData));
                 }}
-                initialValues={initialValues}
+                initialValues={initialFormValues}
                 validate={validateForm}>
                 {({ isSubmitting }) => (
                     <Form>

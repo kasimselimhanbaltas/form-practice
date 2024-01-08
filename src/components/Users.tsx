@@ -1,43 +1,29 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { User } from "../App";
 import { UserService } from "../services/UserService";
+import { useDispatch, useSelector } from "react-redux";
+import { setSelectedUser, setInitialFormValues, setUsers } from "../store/UserStore";
 
 
-export const Users = ({ onUserSelected, updatedUser }: { onUserSelected: (arg0: User) => any, updatedUser: User | null }) => {
+export const Users = () => {
+    const dispatch = useDispatch();
+    const users: User[] = useSelector((state: any) => state.UserState.users);
+    const selectedUser = useSelector((state: any) => state.UserState.selectedUser);
 
-    const [users, setUsers] = useState<User[]>([]);
-    const [selectedUserId, setSelectedUserId] = useState<number>();
-
-    // Fetching user list from jsonplaceholder
-    useEffect(() => {
-        UserService.getUsers().then((response) => {
-            setUsers(response.data);
-            console.log("Fetch successful: ", response.data)
-        });
-    }, []);
-
-    // Listening the prop to react changes
-    useEffect(() => {
-        if (updatedUser) {
-            // users[updatedUser.id - 1] = updatedUser;
-            // immutable approach for setting state
-            setUsers(prevUsers => prevUsers.map(user => (user.id === updatedUser.id ? updatedUser : user)));
-        }
-
-    }, [updatedUser]);
-
-    if (!users) return null;
+    const handleSelectChange = (user: User) => {
+        dispatch(setSelectedUser(user))
+        dispatch(setInitialFormValues({ name: user.name, username: user.username, email: user.email }))
+    };
 
     const listItems = users.map(user =>
-        <button className="userButton" onClick={() => {
-            onUserSelected(user)
-            setSelectedUserId(user.id)
-        }} key={user.id}>
+        <button className="userButton" onClick={() => handleSelectChange(user)
+        } key={user.id}>
             <p>
                 <b>{user.name}</b>
             </p>
         </button>
     );
+
     const optionItems = users.map(user => (
         <option key={user.id} value={user.id} >
             {user.name}
@@ -55,9 +41,9 @@ export const Users = ({ onUserSelected, updatedUser }: { onUserSelected: (arg0: 
             </div>
             {/* This select element is for selecting a user to edit */}
             <div>
-                <select value={selectedUserId} className="selectUser" onChange={(e) => {
-                    onUserSelected(getUser(parseInt(e.target.value, 10) - 1));
-                    setSelectedUserId(parseInt(e.target.value, 10));
+                <select value={selectedUser.id} className="selectUser" onChange={(e) => {
+                    let user = getUser(parseInt(e.target.value, 10) - 1);
+                    handleSelectChange(user);
                 }}>
                     <option value="">Select a user</option>
                     {optionItems}

@@ -1,6 +1,10 @@
-import { useState } from "react";
 import { Users } from "./components/Users";
 import { EditUser } from "./components/EditUser";
+// import { Practice } from "./components/Practice";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { UserService } from "./services/UserService";
+import { setUsers } from "./store/UserStore";
 
 export interface User {
   "id": number,
@@ -31,39 +35,33 @@ export interface FormModel {
 
 
 const App = () => {
-  const [initialFormValues, setInitialFormValues] = useState<FormModel>({ name: "", username: "", email: "" });
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [userToUpdate, setUserToUpdate] = useState<User | null>(null);
+
+  const selectedUser = useSelector((state: any) => state.UserState.selectedUser);
+  const users = useSelector((state: any) => state.UserState.users);
+  const dispatch = useDispatch();
+
+  // Fetching user list from jsonplaceholder
+  useEffect(() => {
+    UserService.getUsers().then((response) => {
+      dispatch(setUsers(response.data));
+      console.log("Fetch successful: ", response.data)
+    });
+  }, []);
 
 
-  function handleUserSelected(user: User) {
-    setSelectedUser(user);
-    setInitialFormValues({ name: user.name, username: user.username, email: user.email });
-  }
 
-  const handleUserUpdated = (formValue: FormModel) => {
-    console.log("Submitted: ", formValue)
-    if (selectedUser) { // check if user is selected
-      let user: User = {
-        ...selectedUser,
-        name: formValue.name,
-        username: formValue.username,
-        email: formValue.email
-      }
-      setUserToUpdate(user);
-    }
-  }
-
-  // initalValuesP = { initialValuesProp }
   return (
     <div className="App">
       <center>
         <div>
-          <Users onUserSelected={handleUserSelected} updatedUser={userToUpdate} ></Users>
-          {selectedUser && (
+          {/* <Practice></Practice> */}
+          <Users></Users>
+          {/* <Users onUserSelected={handleUserSelected} updatedUser={userToUpdate} ></Users> */}
+          {selectedUser.name && (
             <>
               <h1>Selected user: {selectedUser.name}</h1>
-              <EditUser initialValuesProp={initialFormValues} onUpdateUser={handleUserUpdated}></EditUser>
+              {/* <EditUser initialValuesProp={initialFormValues} onUpdateUser={handleUserUpdated}></EditUser> */}
+              <EditUser></EditUser>
             </>
           )}
         </div>
