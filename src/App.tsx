@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { UserService } from "./services/UserService";
 import { setUsers } from "./store/UserStore";
+import ApiCaller from "./components/ApiCaller";
 
 export interface User {
   "id": number,
@@ -37,7 +38,6 @@ export interface FormModel {
 const App = () => {
 
   const selectedUser = useSelector((state: any) => state.UserState.selectedUser);
-  const users = useSelector((state: any) => state.UserState.users);
   const dispatch = useDispatch();
 
   // Fetching user list from jsonplaceholder
@@ -55,16 +55,17 @@ const App = () => {
       <center>
         <div>
           {/* <Practice></Practice> */}
-          <Users></Users>
-          {/* <Users onUserSelected={handleUserSelected} updatedUser={userToUpdate} ></Users> */}
+          <ApiCaller></ApiCaller>
+          {/* <Users></Users>
           {selectedUser.name && (
             <>
               <h1>Selected user: {selectedUser.name}</h1>
-              {/* <EditUser initialValuesProp={initialFormValues} onUpdateUser={handleUserUpdated}></EditUser> */}
               <EditUser></EditUser>
             </>
-          )}
+          )} */}
         </div>
+        {/* <Users onUserSelected={handleUserSelected} updatedUser={userToUpdate} ></Users> */}
+        {/* <EditUser initialValuesProp={initialFormValues} onUpdateUser={handleUserUpdated}></EditUser> */}
       </center>
     </div>
   );

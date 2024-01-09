@@ -1,8 +1,7 @@
-import { useCallback, useEffect, useState } from "react";
 import { User } from "../App";
-import { UserService } from "../services/UserService";
 import { useDispatch, useSelector } from "react-redux";
-import { setSelectedUser, setInitialFormValues, setUsers } from "../store/UserStore";
+import { setSelectedUser, setInitialFormValues } from "../store/UserStore";
+import { useCallback } from "react";
 
 
 export const Users = () => {
@@ -10,13 +9,17 @@ export const Users = () => {
     const users: User[] = useSelector((state: any) => state.UserState.users);
     const selectedUser = useSelector((state: any) => state.UserState.selectedUser);
 
-    const handleSelectChange = (user: User) => {
+    const handleSelectChange = useCallback((user: User) => {
+        console.log("handlereset")
         dispatch(setSelectedUser(user))
         dispatch(setInitialFormValues({ name: user.name, username: user.username, email: user.email }))
-    };
+    }, [selectedUser]);
 
     const listItems = users.map(user =>
-        <button className="userButton" onClick={() => handleSelectChange(user)
+        <button className="userButton" onClick={() => {
+            if (user.username !== selectedUser.username)
+                handleSelectChange(user)
+        }
         } key={user.id}>
             <p>
                 <b>{user.name}</b>
