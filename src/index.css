@@ -31,3 +31,6 @@ code {
   font-size: 15px;
   padding: 10px;
 }
+.httpMethodSelectorButton{
+  padding: 20px; padding-top: 10px; padding-bottom: 10px;
+}

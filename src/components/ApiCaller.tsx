@@ -1,36 +1,71 @@
 import React, { useState } from 'react';
 import useApiRequest from '../hooks/CustomHook';
 
+
 const ApiCaller = () => {
-    const { data, loading, error, fetchData } = useApiRequest();
+    const { data, loading, error, get, put, post } = useApiRequest();
     const [dropdownValue, setDropdownValue] = useState('');
-    const [inputValue, setInputValue] = useState('');
+    const [userAPIurl, setUserAPIurl] = useState('');
+    const [apiMethod, setAPImethod] = useState<'GET' | 'PUT' | 'POST'>('GET');
+    const [requestBody, setRequestBody] = useState('');
+
+    const handleFetch = () => {
+        switch (apiMethod) {
+            case "GET":
+                console.log("get")
+                get(userAPIurl);
+                break;
+            case "PUT":
+                console.log("put")
+                put(userAPIurl, requestBody);
+                break;
+            case "POST":
+                console.log("post")
+                post(userAPIurl, requestBody);
+                break;
+        }
+    }
 
     const handleInputChange = (event: any) => {
-        setInputValue(event.target.value);
+        setUserAPIurl(event.target.value);
     };
     const handleDropdownChange = (event: any) => {
-        setInputValue(event.target.value)
+        setUserAPIurl(event.target.value)
         setDropdownValue(event.target.value);
     };
 
+    //     {
+    //         id: 1,
+    //             title: 'foo',
+    //                 body: 'bar',
+    //                     userId: 1,
+    //   }
     return (
         <div>
-            <label htmlFor="">Type a url to see fetch an API:</label> <br />
-            <input style={{ width: "300px", padding: "10px" }} type="text" value={inputValue}
+            <div>
+                <button className='httpMethodSelectorButton' onClick={() => setAPImethod('GET')}>GET</button>
+                <button className='httpMethodSelectorButton' onClick={() => setAPImethod('PUT')}>PUT</button>
+                <button className='httpMethodSelectorButton' onClick={() => setAPImethod('POST')}>POST</button>
+            </div>
+            <label htmlFor="">Type a url to see fetch an API. Method: {apiMethod}</label> <br />
+            <input style={{ width: "300px", padding: "10px" }} type="text" value={userAPIurl}
                 onChange={handleInputChange} placeholder='Write an API or select from the dropdown menu' />
-            <br />
-            <div style={{ display: "inline" }}>
+
+            {(['PUT', 'POST'].includes(apiMethod)) && (
+                <input style={{ width: "300px", padding: "10px" }} type="text" value={requestBody}
+                    onChange={(e) => setRequestBody(e.target.value)} placeholder='Write an API or select from the dropdown menu' />
+            )} <br />
+
+            <span>
                 <select value={dropdownValue} className="selectUser" onChange={handleDropdownChange}>
                     <option key={0} value="">Select </option>
                     <option key={1} value="https://jsonplaceholder.typicode.com/users">Users</option>
                     <option key={2} value="https://jsonplaceholder.typicode.com/albums">Albums</option>
                     <option key={3} value="https://jsonplaceholder.typicode.com/photos">Photos</option>
                     <option key={4} value="https://jsonplaceholder.typicode.com/wrongAPI">Wrong</option>
-
                 </select>
-            </div>
-            <button style={{ padding: 10 }} onClick={() => { fetchData(inputValue); }}>Make Request</button>
+            </span>
+            <button style={{ padding: 10 }} onClick={handleFetch}>Make Request</button>
 
             {loading && <p>Loading...</p>}
             {error && <p>Error: {error}</p>}
