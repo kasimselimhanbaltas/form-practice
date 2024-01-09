@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import useApiRequest from '../services/CustomHook';
+import useApiRequest from '../hooks/CustomHook';
 
 const ApiCaller = () => {
     const { data, loading, error, fetchData } = useApiRequest();
