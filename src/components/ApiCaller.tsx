@@ -12,15 +12,12 @@ const ApiCaller = () => {
     const handleFetch = () => {
         switch (apiMethod) {
             case "GET":
-                console.log("get")
                 get(userAPIurl);
                 break;
             case "PUT":
-                console.log("put")
                 put(userAPIurl, requestBody);
                 break;
             case "POST":
-                console.log("post")
                 post(userAPIurl, requestBody);
                 break;
         }
